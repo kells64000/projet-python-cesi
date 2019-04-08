@@ -26,43 +26,55 @@ class Database:
         self.con = pymysql.connect(host=host, user=user, password=password, db=db, cursorclass=pymysql.cursors.
                                    DictCursor)
         self.cur = self.con.cursor()
-    def list_employees(self):
-        self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity FROM sensor as s INNER JOIN data_sensor as ds on s.id_sensor = ds.id_data_sensor ORDER BY id_sensor DESC LIMIT 1 ")
+    def getLastDataSensor(self):
+        self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity FROM data_sensor as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor ORDER BY id_data_sensor DESC LIMIT 2")
         result = self.cur.fetchall()
-        #id_dernier = int(float(result[0][0]))
+        id_dernier = result[0]["id_sensor"]
         return result
 
 class DataBaseThread(Thread):
+
     def __init__(self):
         self.delay = 1
-        self.con = pymysql.connect(host=host, user=user, password=password, db=db, cursorclass=pymysql.cursors.
-                                   DictCursor)
+        self.con = pymysql.connect(host=host, user=user, password=password, db=db, cursorclass=pymysql.cursors.DictCursor)
         self.cur = self.con.cursor()
+        global id_dernier  # Needed to modify global copy of globvar
+        id_dernier = 0
         super(DataBaseThread, self).__init__()
 
-    def randomNumberGenerator(self):
-        """
-        Generate a random number every 1 second and emit to a socketio instance (broadcast)
-        Ideally to be run in a separate thread?
-        """
+    def getNewDataSensor(self):
         #infinite loop of magical random numbers
-        print("Making random numbers")
         while not thread_stop_event.isSet():
-            number = round(random()*10, 3)
-            print(number)
-            socketio.emit('newnumber', {'number': number}, namespace='/test')
+            self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity FROM data_sensor as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor ORDER BY id_data_sensor DESC LIMIT 1")
+            result = self.cur.fetchall()
+
+            if result[0]["id_sensor"] != id_dernier:
+                socketio.emit('getNewData', {
+                    'id_sensor': result[0]["id_sensor"],
+                    'name': result[0]["name"],
+                    'ID': result[0]["ID"],
+                    'Mac': result[0]["Mac"],
+                    'battery': result[0]["battery"],
+                    'temperature': str(result[0]["temperature"]),
+                    'humidity': str(result[0]["humidity"])
+                }, namespace='/test')
+
+            DataBaseThread.set_globvar(result[0]["id_sensor"])
+
             sleep(self.delay)
 
     def run(self):
-        self.randomNumberGenerator()
+        self.getNewDataSensor()
 
-
+    def set_globvar(glvar):
+        global id_dernier  # Needed to modify global copy of globvar
+        id_dernier = glvar
 
 @app.route('/')
 def employees():
     def db_query():
         db = Database()
-        emps = db.list_employees()
+        emps = db.getLastDataSensor()
         return emps
     res = db_query()
     return render_template('index.html', result=res, content_type='application/json')
@@ -74,7 +86,6 @@ def test_connect():
     global thread
     print('Client connected')
 
-    #Start the random number generator thread only if the thread has not been started before.
     if not thread.isAlive():
         print("Starting Thread")
         thread = DataBaseThread()
