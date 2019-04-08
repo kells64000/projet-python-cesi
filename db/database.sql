@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS `sensor` (
 DROP TABLE IF EXISTS `data_sensor`;
 CREATE TABLE IF NOT EXISTS `data_sensor` (
   `id_data_sensor` int(11) NOT NULL AUTO_INCREMENT,
+  `date_releve` datetime not null,
   `battery` int(11) NOT NULL,
   `temperature` decimal(10,2) NOT NULL,
   `humidity` decimal(10,2) NOT NULL,
