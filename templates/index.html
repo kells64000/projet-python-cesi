@@ -3,24 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Station meteo</title>
-    {% if result %}
-        <table id="employees" style="width:100%">
-            <tbody>
-                <tr>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                </tr>
-    {% for row in result %}
-        <tr>
-            <td> {{ row.cli_prenom }}</td>
-            <td> {{ row.cli_nom }}</td>
-        </tr>
-    {% endfor %}
-         </tbody>
-        </table>
-    {% endif %}
-
-
 </head>
 <body>
 
