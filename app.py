@@ -13,7 +13,7 @@ class Database:
                                    DictCursor)
         self.cur = self.con.cursor()
     def list_employees(self):
-        self.cur.execute("SELECT cli_prenom,cli_nom FROM customer LIMIT 50")
+        self.cur.execute("SELECT s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity FROM sensor as s INNER JOIN data_sensor as ds on s.id_sensor = ds.id_data_sensor ")
         result = self.cur.fetchall()
         return result
 
