@@ -15,5 +15,11 @@ user: pi
 mdp: python2019
 database: station-meteo
 
-mysql -u pi -ppython2019 -d station-meteo
+mysql -u pi -ppython2019 -D station-meteo
+```
+
+Pour Creer la bdd  :
+
+```bash
+mysql -u pi -ppython2019 -D station-meteo < db/database.sql
 ```
