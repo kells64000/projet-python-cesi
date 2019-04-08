@@ -220,6 +220,8 @@ fabric.properties
 .idea/projet-python-cesi.iml
  .idea/vcs.xml
  .idea/
-
+.idea/sqldialects.xml
 .idea/vcs.xml
 .idea/Projet.iml
+.idea/inspectionProfiles/Project_Default.xml
+

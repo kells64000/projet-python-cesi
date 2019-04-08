@@ -4,34 +4,87 @@
     <meta charset="UTF-8">
     <title>Station meteo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
-    {% if result %}
-        <table id="employees" style="width:100%">
-            <tbody>
-                <tr>
-                    <th>Nom</th>
-                    <th>Id</th>
-                    <th>Mac</th>
-                    <th>Batterie</th>
-                    <th>Temperature</th>
-                    <th>Humidite</th>
-                </tr>
-    {% for row in result %}
-        <tr>
-            <td> {{ row.name }}</td>
-            <td> {{ row.ID }}</td>
-            <td> {{ row.Mac }}</td>
-            <td> {{ row.battery }} %</td>
-            <td> {{ row.temperature }} °</td>
-            <td> {{ row.humidity }} %</td>
-        </tr>
-    {% endfor %}
-         </tbody>
-        </table>
-    {% endif %}
-
-
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/style.css">
 </head>
-<body>
+<body class="has-background-grey">
 
+    <div class="container is-vcentered">
+        <div class="colulms">
+            <div class="column">
+                <h1 class="title has-text-centered has-text-white">Station Météo</h1>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column">
+                <div class="card">
+                    <div class="card-image">
+                        <figure class="image is-4by3">
+                            <a href="/sensor/id">
+                                <img src="https://picsum.photos/1280/960/?84" alt="sensor">
+                            </a>
+                        </figure>
+                    </div>
+                    <div class="card-content">
+                        <div class="media">
+                            <div class="media-content has-text-centered">
+
+                                <p class="title is-4"><i class="fas fa-edit"></i> nom sensor</p>
+                                <p class="subtitle is-6">id sensor</p>
+                            </div>
+                        </div>
+
+                        <div class="content">
+                            <div>mac address</div>
+                            <div>
+                                <i class="fas fa-battery-empty"></i>
+                                <i class="fas fa-battery-quarter"></i>
+                                <i class="fas fa-battery-half"></i>
+                                <i class="fas fa-battery-full"></i>
+                                batterie
+                            </div>
+                            <br>
+                            <div>humidité</div>
+                            <div>temperature</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="card">
+                    <div class="card-image">
+                        <figure class="image is-4by3">
+                            <a href="/sensor/id">
+                                <img src="https://picsum.photos/1280/960/?94" alt="sensor">
+                            </a>
+                        </figure>
+                    </div>
+                    <div class="card-content">
+                        <div class="media">
+                            <div class="media-content has-text-centered">
+
+                                <p class="title is-4"><i class="fas fa-edit"></i> nom sensor</p>
+                                <p class="subtitle is-6">id sensor</p>
+                            </div>
+                        </div>
+
+                        <div class="content">
+                            <div>mac address</div>
+                            <div>
+                                <i class="fas fa-battery-empty"></i>
+                                <i class="fas fa-battery-quarter"></i>
+                                <i class="fas fa-battery-half"></i>
+                                <i class="fas fa-battery-full"></i>
+                                batterie
+                            </div>
+                            <br>
+                            <div>humidité</div>
+                            <div>temperature</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

@@ -1,0 +1,16 @@
+html, body {
+    width: 100vw;
+    height: 100vh;
+}
+
+.card :hover {
+    opacity: 0.3;
+}
+
+.card :hover {
+    opacity: 1;
+}
+
+.card-image:hover {
+    cursor: pointer;
+}
