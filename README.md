@@ -23,3 +23,5 @@ Pour Creer la bdd  :
 ```bash
 mysql -u pi -ppython2019 -D station-meteo < db/database.sql
 ```
+
+Notre Capteur est le 2

@@ -31,6 +31,10 @@ class Database:
         result = self.cur.fetchall()
         id_dernier = result[0]["id_sensor"]
         return result
+    def getSensor(self,id_sensor):
+        self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity FROM data_sensor as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor WHERE id_sensor = "+id_sensor)
+        result = self.cur.fetchall()
+        return result
 
 class DataBaseThread(Thread):
 
@@ -78,6 +82,12 @@ def employees():
         return emps
     res = db_query()
     return render_template('index.html', result=res, content_type='application/json')
+
+@app.route('/sensor/<sensor_id>')
+def sensor(sensor_id):
+    db = Database()
+    emps = db.getSensor(sensor_id)
+    return render_template('data_sensor.html', result=emps, content_type='application/json')
 
 
 @socketio.on('connect', namespace='/test')
