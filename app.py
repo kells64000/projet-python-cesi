@@ -1,6 +1,4 @@
 from flask import Flask, render_template
-import mysql.connector
-from mysql.connector import Error
 import pymysql
 
 app = Flask(__name__)
@@ -8,9 +6,9 @@ app = Flask(__name__)
 class Database:
     def __init__(self):
         host = "127.0.0.1"
-        user = "root"
-        password = ""
-        db = "cesimad"
+        user = "pi"
+        password = "python2019"
+        db = "station-meteo"
         self.con = pymysql.connect(host=host, user=user, password=password, db=db, cursorclass=pymysql.cursors.
                                    DictCursor)
         self.cur = self.con.cursor()
