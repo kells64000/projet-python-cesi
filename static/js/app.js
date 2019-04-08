@@ -1,1 +1,1 @@
-// fichier javascript
+require("../socket.js");
