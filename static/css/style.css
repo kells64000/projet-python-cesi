@@ -14,3 +14,7 @@ html, body {
 .card-image:hover {
     cursor: pointer;
 }
+
+.fa-edit:hover {
+    cursor: pointer;
+}
