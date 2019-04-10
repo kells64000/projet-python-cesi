@@ -5,8 +5,19 @@ from flask import Flask, render_template, url_for, copy_current_request_context
 from random import random
 from time import sleep
 from threading import Thread, Event
+from flask_mail import Mail, Message
 
 app = Flask(__name__)
+#mail config
+mail = Mail(app)
+
+app.config['MAIL_SERVER']='localhost'
+app.config['MAIL_PORT'] = 1035
+# app.config['MAIL_USERNAME'] = 'yourId@gmail.com'
+# app.config['MAIL_PASSWORD'] = '*****'
+# app.config['MAIL_USE_TLS'] = False
+# app.config['MAIL_USE_SSL'] = True
+
 #turn the flask app into a socketio app
 socketio = SocketIO(app)
 
