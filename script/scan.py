@@ -1,4 +1,3 @@
-# coding=utf-8
 from bluepy.btle import Scanner, DefaultDelegate
 import pymysql
 
@@ -8,31 +7,34 @@ class ScanDelegate(DefaultDelegate):
         DefaultDelegate.__init__(self)
 
     def handleDiscovery(self, dev, isNewDev, isNewData):
+        dbSensors = DatabaseManager.getDatabaseDevices()
+        # print (dbSensors)
         if isNewDev:
-            if (dev.addr == 'd7:ef:13:27:15:29'):
-                print ("Sensor externe découvert: ", dev.addr)
-            if (dev.addr == 'd6:c6:c7:39:a2:e8'):
-                print ("Sensor interne découvert: ", dev.addr)
+            if (dev.addr == dbSensors[1][3]):
+                print("Sensor externe découvert: ", dev.addr)
+            if (dev.addr == dbSensors[0][3]):
+                print("Sensor interne découvert: ", dev.addr)
         elif isNewData:
-            if (dev.addr == 'd7:ef:13:27:15:29'):
-                print ("Nouvelles données reçues depuis le sensor externe: ", dev.addr)
-            if (dev.addr == 'd6:c6:c7:39:a2:e8'):
-                print ("Nouvelles données reçues depuis le sensor interne:: ", dev.addr)
+            if (dev.addr == dbSensors[1][3]):
+                print("Nouvelles données reçues depuis le sensor externe: ", dev.addr)
+            if (dev.addr == dbSensors[0][3]):
+                print("Nouvelles données reçues depuis le sensor interne:: ", dev.addr)
 
-    def getDevicesData(devices):
-        devicesDataList = []
-        for dev in devices:
-            currentDevice = []
-            if (dev.addr == 'd7:ef:13:27:15:29' or dev.addr == 'd6:c6:c7:39:a2:e8'):
-                currentDevice.append(dev.addr)
-                print ("Device %s (%s), RSSI=%d dB" % (dev.addr, dev.addrType, dev.rssi))
-                for (adtype, desc, value) in dev.getScanData():
+    def getSensorsData(dbSensors, scanSensors):
+        sensorsDataList = []
+        for scanSensor in scanSensors:
+            currentSensor = []
+            if (scanSensor.addr == dbSensors[0][3] or scanSensor.addr == dbSensors[1][3]):
+                currentSensor.append(scanSensor.addr)
+                print("Device %s (%s), RSSI=%d dB" % (scanSensor.addr, scanSensor.addrType, scanSensor.rssi))
+                for (adtype, desc, value) in scanSensor.getScanData():
+                    print("  %s = %s & ADTYPE = %s" % (desc, value, adtype))
                     if (desc == 'Short Local Name'):
-                        currentDevice.append(value)
-                    if (desc == '16b Service Data'):
-                        currentDevice.append(value)
-                devicesDataList.append(currentDevice)
-        return devicesDataList
+                        currentSensor.append(value)
+                    if (desc == '16b Service Data' and adtype == 22):
+                        currentSensor.append(value)
+                sensorsDataList.append(currentSensor)
+        return sensorsDataList
 
     def formatToFloat(value):
         valueToDcl = str(int(value, 16))
@@ -41,65 +43,75 @@ class ScanDelegate(DefaultDelegate):
 
     def formatDataBeforeInsert(devicesDataList):
         for deviceData in devicesDataList:
+            print('DATA IN DEVICESDATA = ', len(deviceData))
+            print('DEVICE DATA =', deviceData)
             if (len(deviceData) == 3):
                 print('////////////////////////////////////')
                 print('CURRENT DATA = ', deviceData)
                 mac = deviceData[0]
                 print('MAC ADRRESS = ', mac)
-                name = deviceData[1]
-                print('DEVICE NAME = ', name)
-                id = deviceData[2][12:20]
-                print('id = ', id)
                 power = deviceData[2][20:22]
+                print('Batterie Hexa ', power)
                 print('Batterie = ', int(power, 16))
                 formatTpt = ScanDelegate.formatToFloat(deviceData[2][24:28])
                 print('Format tpt = ', formatTpt)
                 formatHumidity = ScanDelegate.formatToFloat(deviceData[2][28:32])
                 print('Format humidity = ', formatHumidity)
-                ScanDelegate.insertSensor(name, mac, id, power, formatTpt, formatHumidity)
+                detectedSignal = True
+                ScanDelegate.getSensorId(mac, power, formatTpt, formatHumidity, detectedSignal)
+            else:
+                mac = deviceData[0]
+                power = None
+                formatTpt = None
+                formatHumidity = None
+                detectedSignal = False
+                ScanDelegate.getSensorId(mac, power, formatTpt, formatHumidity, detectedSignal)
 
-    def dbConnect():
-        db = pymysql.connect("localhost", "pi", "python2019", "station-meteo")
-        return db.cursor()
-
-    def insertSensor(name, mac, id, power, tpt, humidity):
-        cursor = ScanDelegate.dbConnect()
-        # cursor.execute("TRUNCATE TABLE sensor")
-        # sqlQuery = "INSERT INTO sensor (name, ID, Mac) VALUES (%s,%s,%s)"
-        # sqlTuple = (name, id, mac);
-        # cursor.execute(sqlQuery, sqlTuple)
-        # cursor.execute("SELECT * FROM sensor")
-        # data = cursor.fetchone()
-        # print (data)
+    def getSensorId(mac, power, tpt, humidity, detectedSignal):
+        cursor = DatabaseManager.dbConnect()
 
         # Récupération du censor id courrant
         sqlQuery = "SELECT id_sensor FROM sensor WHERE Mac = %s"
         sqlTuple = (mac)
         cursor.execute(sqlQuery, sqlTuple)
-        data = cursor.fetchone()
+        ids = cursor.fetchone()
         print("SENSOR ID")
-        print(data)
-        for row in data:
-            cursor.close()
-            ScanDelegate.insertDataSensor(row, power, tpt, humidity)
 
-    def insertDataSensor(id, power, tpt, humidity):
-        cursor = ScanDelegate.dbConnect()
-        sqlQuery = "INSERT INTO data_sensor (date_releve, battery, temperature, humidity, id_sensor) VALUES (NOW(),%s,%s,%s,%s)"
-        sqlTuple = (power, tpt, humidity, id);
+        for id in ids:
+            cursor.close()
+            ScanDelegate.insertDataSensor(id, power, tpt, humidity, detectedSignal)
+
+    def insertDataSensor(id, power, tpt, humidity, detectedSignal):
+        cursor = DatabaseManager.dbConnect()
+        sqlQuery = "INSERT INTO data_sensor (date_releve, battery, temperature, humidity, detected_signal, id_sensor) VALUES (NOW(),%s,%s,%s,%s,%s)"
+        sqlTuple = (power, tpt, humidity, detectedSignal, id);
         cursor.execute(sqlQuery, sqlTuple)
         cursor.close()
         return True;
 
 
+class DatabaseManager():
+    def dbConnect():
+        db = pymysql.connect("localhost", "pi", "python2019", "station-meteo")
+        return db.cursor()
+
+    def getDatabaseDevices():
+        devices = []
+        cursor = DatabaseManager.dbConnect()
+        cursor.execute("SELECT * FROM sensor")
+        return cursor.fetchall()
+
+
 ################# MAIN #################
 
 while True:
+    databaseSensors = DatabaseManager.getDatabaseDevices();
+
     # Création du scanner
     scanner = Scanner().withDelegate(ScanDelegate())
     # Récupération des sensors
-    devices = scanner.scan(15.0)
+    scanSensors = scanner.scan(10.0)
     # Récupération des données envoyées par les sensors
-    devicesDataList = ScanDelegate.getDevicesData(devices)
+    devicesDataList = ScanDelegate.getSensorsData(databaseSensors, scanSensors)
     # Formatage et insertion des datas
     ScanDelegate.formatDataBeforeInsert(devicesDataList)
