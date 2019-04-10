@@ -3,14 +3,15 @@
     <title>Station meteo</title>
 {% endblock %}
 {% block content %}
-    <div class="container-fluid h100 has-background-grey">
-        <div class="colulms">
-            <div class="column">
-                <h1 class="title has-text-centered has-text-white">Station Météo</h1>
-            </div>
-        </div>
-        <div class="columns">
 
+    <div class="container-fluid h100">
+
+        <div class="pb-5 pt-5 is-flex justify-center">
+            <h1 class="title has-text-white mr-2">Station Météo</h1>
+            <i class="fas fa-cloud-sun fa-3x has-text-white"></i>
+        </div>
+
+        <div class="columns">
             <div class="column">
                 <div class="card">
                     <div class="card-image">
@@ -132,6 +133,7 @@
                             <div>
                                 <i id="signal3" class="far fa-circle"></i>
                             </div>
+                            <br>
                             <div>
                                 <i class="fas fa-clock"></i>
                                 Date : <span id="date3"></span>

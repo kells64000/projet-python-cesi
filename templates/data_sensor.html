@@ -3,30 +3,136 @@
     <title id="title">{{ result[0].name }}</title>
 {% endblock %}
 {% block content %}
-    {% if result %}
-        <table id="data_sensor" style="width:100%">
-            <tbody>
-                <tr>
-                    <th>Nom</th>
-                    <th>Id</th>
-                    <th>Mac</th>
-                    <th>Batterie</th>
-                    <th>Temperature</th>
-                    <th>Humidite</th>
-                    <th>Date</th>
-                </tr>
-    {% for row in result %}
-        <tr>
-            <td> {{ row.name }}</td>
-            <td> {{ row.ID }}</td>
-            <td> {{ row.Mac }}</td>
-            <td> {{ row.battery }} %</td>
-            <td> {{ row.temperature }} °</td>
-            <td> {{ row.humidity }} %</td>
-            <td> {{ row.date_releve }}</td>
-        </tr>
-    {% endfor %}
-         </tbody>
-        </table>
-    {% endif %}
+
+    <div class="container-fluid">
+
+        <a href="/" class="button is-grey mt-5 ml-5"><i class="fas fa-home"></i></a>
+        <h1 class="title has-text-centered has-text-white pb-5 pt-3">{{ result[0].name }}</h1>
+
+        <div class="columns">
+            <div class="column is-4">
+                <div class="card">
+                    <header class="card-header">
+                        <p class="card-header-title justify-center">
+                            Gestion des alertes par mail
+                        </p>
+                    </header>
+                    <div class="card-content">
+
+                        <div class="field">
+                            <label class="label">Email du destinataire</label>
+                            <div class="control has-icons-left">
+                                <input class="input is-grey" type="email" value="exemple@mail.fr">
+                                <span class="icon is-small is-left">
+                                  <i class="fas fa-envelope"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <br>
+                        <p class="field">
+                            <label class="label">Intervalle d'envoi</label>
+                            <input id="range-intervalle" type="range" min="0" max="24" step="0.5">
+                            <p>Valeur: <span>h</span></p>
+                        </p>
+                        <br>
+                        <p class="field">
+                            <label class="label">Seuil alerte température</label>
+                            <input id="range-temperature"  type="range" min="0" max="50" step="0.5">
+                            <p>Valeur: <span>°</span></p>
+                        </p>
+                        <br>
+                        <p class="field">
+                            <label class="label">Seuil alerte humidité</label>
+                            <input id="range-humidite" type="range" min="0" max="100" step="0.5">
+                            <p>Valeur: <span>%</span></p>
+                        </p>
+                    </div>
+                    <footer class="card-footer">
+                        <p class="card-footer-item has-background-danger button is-large">
+                            <i class="fas fa-times"></i>
+                        </p>
+                        <p class="card-footer-item has-background-success button is-large">
+                            <i class="fas fa-check"></i>
+                        </p>
+                    </footer>
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="card">
+                    <header class="card-header">
+                        <p class="card-header-title justify-center">
+                            Statistiques
+                        </p>
+                    </header>
+                    <div class="card-content">
+
+                    </div>
+                    <footer class="card-footer">
+                        <p class="card-footer-item">
+                            <input class="mr-2" type="date">
+                            <input type="time">
+                        </p>
+                        <p class="card-footer-item">
+                            <input class="mr-2" type="date">
+                            <input type="time">
+                        </p>
+                    </footer>
+                </div>
+            </div>
+        </div>
+
+        <div class="columns pt-3">
+            <div class="column">
+                {% if result %}
+
+                    <div class="is-flex justify-center mb-2">
+
+                        <button class="button is-primary mr-2">
+                            <i class="fas fa-sync"></i>
+                        </button>
+
+                        <div class="field has-addons">
+                            <div class="control">
+                                <input class="input" type="text" placeholder="Recherche...">
+                            </div>
+                            <div class="control">
+                                <a class="button is-grey">
+                                    <i class="fas fa-search"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <table id="data_sensor" class="table table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                        <thead>
+                            <tr>
+{#                                <th class="has-text-centered">Nom</th>#}
+{#                                <th class="has-text-centered">Id</th>#}
+{#                                <th class="has-text-centered">Mac</th>#}
+                                <th class="has-text-centered">Batterie</th>
+                                <th class="has-text-centered">Temperature</th>
+                                <th class="has-text-centered">Humidite</th>
+                                <th class="has-text-centered">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for row in result %}
+                            <tr>
+{#                                <td class="has-text-centered"> {{ row.name }}</td>#}
+{#                                <td class="has-text-centered"> {{ row.ID }}</td>#}
+{#                                <td class="has-text-centered"> {{ row.Mac }}</td>#}
+                                <td class="has-text-centered"> {{ row.battery }} %</td>
+                                <td class="has-text-centered"> {{ row.temperature }} °</td>
+                                <td class="has-text-centered"> {{ row.humidity }} %</td>
+                                <td class="has-text-centered"> {{ row.date_releve }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% endblock %}
