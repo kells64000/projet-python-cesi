@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             document.getElementById("macAdresse").innerHTML = msg.Mac;
             document.getElementById("date").innerHTML = msg.date;
 
+            checkSignal(msg.signal, 1);
             checkBatterie(msg.battery, 1);
             document.getElementById("batterie").innerHTML = msg.battery;
             document.getElementById("humidite").innerHTML = msg.humidity;
@@ -33,6 +34,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             document.getElementById("macAdresse2").innerHTML = msg.Mac2;
             document.getElementById("date2").innerHTML = msg.date2;
 
+            checkSignal(msg.signal2, 2);
             checkBatterie(msg.battery2, 2);
             document.getElementById("batterie2").innerHTML = msg.battery2;
             document.getElementById("humidite2").innerHTML = msg.humidity2;
@@ -81,5 +83,36 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 document.getElementById(batteryName + "-half").setAttribute("style", "display:none");
                 document.getElementById(batteryName + "-quarter").setAttribute("style", "display:none");
             }
+    }
+
+    function checkSignal(signal, id) {
+
+        let signalName = "";
+        let signalText = "";
+
+        if (id === 1) {
+            signalName = "signal";
+        } else if (id === 2) {
+            signalName = "signal2";
+        } else {
+            signalName = "signal3";
+        }
+
+        let signalHtml = document.getElementById(signalName);
+
+        if (signal === 0) {
+            signalHtml .classList.remove('has-background-success');
+            signalHtml .classList.add('has-background-danger');
+
+            signalText = document.createTextNode(' Déconnecté');
+            signalHtml.parentNode.insertBefore(signalText, signalHtml.nextSibling);
+
+        } else {
+            signalHtml.classList.remove('has-background-danger');
+            signalHtml.classList.add('has-background-success');
+
+            signalText = document.createTextNode(' Connecté');
+            signalHtml.parentNode.insertBefore(signalText, signalHtml.nextSibling);
+        }
     }
 });

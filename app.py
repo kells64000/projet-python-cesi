@@ -15,7 +15,8 @@ thread = Thread()
 thread_stop_event = Event()
 id_dernier = 0
 
-host = "192.168.43.58"
+host = "127.0.0.1"
+# host = "192.168.43.58"
 user = "pi"
 password = "python2019"
 db = "station-meteo"
@@ -53,7 +54,7 @@ class DataBaseThread(Thread):
     def getNewDataSensor(self):
         #infinite loop of magical random numbers
         while not thread_stop_event.isSet():
-            self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity,ds.date_releve FROM (SELECT DISTINCT id_sensor, id_data_sensor,battery,temperature,humidity,date_releve FROM data_sensor ORDER BY id_data_sensor DESC) as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor GROUP BY s.id_sensor ORDER BY id_sensor LIMIT 3")
+            self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.detected_signal,ds.battery,ds.temperature,ds.humidity,ds.date_releve FROM (SELECT DISTINCT id_sensor, id_data_sensor,detected_signal,battery,temperature,humidity,date_releve FROM data_sensor ORDER BY id_data_sensor DESC) as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor GROUP BY s.id_sensor ORDER BY id_sensor LIMIT 3")
             result = self.cur.fetchall()
 
             if (len(result) >= 3):
@@ -63,6 +64,7 @@ class DataBaseThread(Thread):
                     'name': result[0]["name"],
                     'ID': result[0]["ID"],
                     'Mac': result[0]["Mac"],
+                    'signal': result[0]["detected_signal"],
                     'battery': result[0]["battery"],
                     'temperature': str(result[0]["temperature"]),
                     'humidity': str(result[0]["humidity"]),
@@ -72,6 +74,7 @@ class DataBaseThread(Thread):
                     'name2': result[1]["name"],
                     'ID2': result[1]["ID"],
                     'Mac2': result[1]["Mac"],
+                    'signal2': result[1]["detected_signal"],
                     'battery2': result[1]["battery"],
                     'temperature2': str(result[1]["temperature"]),
                     'humidity2': str(result[1]["humidity"]),
@@ -81,6 +84,7 @@ class DataBaseThread(Thread):
                     'name3': result[2]["name"],
                     'ID3': result[2]["ID"],
                     'Mac3': result[2]["Mac"],
+                    'signal3': result[2]["detected_signal"],
                     'battery3': result[2]["battery"],
                     'temperature3': str(result[2]["temperature"]),
                     'humidity3': str(result[2]["humidity"]),
@@ -93,6 +97,7 @@ class DataBaseThread(Thread):
                     'name': result[0]["name"],
                     'ID': result[0]["ID"],
                     'Mac': result[0]["Mac"],
+                    'signal': result[0]["detected_signal"],
                     'battery': result[0]["battery"],
                     'temperature': str(result[0]["temperature"]),
                     'humidity': str(result[0]["humidity"]),
@@ -102,6 +107,7 @@ class DataBaseThread(Thread):
                     'name2': result[1]["name"],
                     'ID2': result[1]["ID"],
                     'Mac2': result[1]["Mac"],
+                    'signal2': result[1]["detected_signal"],
                     'battery2': result[1]["battery"],
                     'temperature2': str(result[1]["temperature"]),
                     'humidity2': str(result[1]["humidity"]),
@@ -114,6 +120,7 @@ class DataBaseThread(Thread):
                     'name': result[0]["name"],
                     'ID': result[0]["ID"],
                     'Mac': result[0]["Mac"],
+                    'signal': result[0]["detected_signal"],
                     'battery': result[0]["battery"],
                     'temperature': str(result[0]["temperature"]),
                     'humidity': str(result[0]["humidity"]),

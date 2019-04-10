@@ -1,3 +1,11 @@
-.fa-edit:hover {
+.fa {
+
+  &-edit:hover {
     cursor: pointer;
+  }
+
+  &-circle {
+    border-radius: 10px;
+  }
+
 }
