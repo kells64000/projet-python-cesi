@@ -66,7 +66,7 @@ class DataBaseThread(Thread):
                     'battery': result[0]["battery"],
                     'temperature': str(result[0]["temperature"]),
                     'humidity': str(result[0]["humidity"]),
-                    'date': str(result[0]["date_releve"]),
+                    'date': str(result[0]["date_releve"].strftime('%d/%m/%Y %H:%M:%S')),
 
                     'id_sensor2': result[1]["id_sensor"],
                     'name2': result[1]["name"],
@@ -75,7 +75,7 @@ class DataBaseThread(Thread):
                     'battery2': result[1]["battery"],
                     'temperature2': str(result[1]["temperature"]),
                     'humidity2': str(result[1]["humidity"]),
-                    'date2': str(result[1]["date_releve"]),
+                    'date2': str(result[1]["date_releve"].strftime('%d/%m/%Y %H:%M:%S')),
 
                     'id_sensor3': result[2]["id_sensor"],
                     'name3': result[2]["name"],
@@ -84,7 +84,7 @@ class DataBaseThread(Thread):
                     'battery3': result[2]["battery"],
                     'temperature3': str(result[2]["temperature"]),
                     'humidity3': str(result[2]["humidity"]),
-                    'date3': str(result[2]["date_releve"])
+                    'date3': str(result[2]["date_releve"].strftime('%d/%m/%Y %H:%M:%S'))
                 }, namespace='/getNewDataSensor')
             elif(len(result)>= 2):
                 socketio.emit('getNewData', {
@@ -96,7 +96,7 @@ class DataBaseThread(Thread):
                     'battery': result[0]["battery"],
                     'temperature': str(result[0]["temperature"]),
                     'humidity': str(result[0]["humidity"]),
-                    'date': str(result[0]["date_releve"]),
+                    'date': str(result[0]["date_releve"].strftime('%d/%m/%Y %H:%M:%S')),
 
                     'id_sensor2': result[1]["id_sensor"],
                     'name2': result[1]["name"],
@@ -105,7 +105,7 @@ class DataBaseThread(Thread):
                     'battery2': result[1]["battery"],
                     'temperature2': str(result[1]["temperature"]),
                     'humidity2': str(result[1]["humidity"]),
-                    'date2': str(result[1]["date_releve"])
+                    'date2': str(result[1]["date_releve"].strftime('%d/%m/%Y %H:%M:%S'))
                 }, namespace='/getNewDataSensor')
             elif(len(result) != 0):
                 socketio.emit('getNewData', {
@@ -117,7 +117,7 @@ class DataBaseThread(Thread):
                     'battery': result[0]["battery"],
                     'temperature': str(result[0]["temperature"]),
                     'humidity': str(result[0]["humidity"]),
-                    'date': str(result[0]["date_releve"])
+                    'date': str(result[0]["date_releve"].strftime('%d/%m/%Y %H:%M:%S'))
                 }, namespace='/getNewDataSensor')
             DataBaseThread.set_id_dernier(result[0]["id_sensor"])
 
@@ -129,6 +129,8 @@ class DataBaseThread(Thread):
     def set_id_dernier(glvar):
         global id_dernier  # Needed to modify global copy of globvar
         id_dernier = glvar
+
+#class Mail (Thread):
 
 @app.route('/')
 def index():
