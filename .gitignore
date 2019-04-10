@@ -225,3 +225,5 @@ fabric.properties
 .idea/Projet.iml
 .idea/inspectionProfiles/Project_Default.xml
 
+static/build
+
