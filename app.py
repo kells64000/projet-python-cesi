@@ -32,7 +32,7 @@ class Database:
         id_dernier = result[0]["id_sensor"]
         return result
     def getSensor(self,id_sensor):
-        self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity FROM data_sensor as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor WHERE s.id_sensor = "+id_sensor+" ORDER BY ds.id_data_sensor DESC")
+        self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity,ds.date_releve FROM data_sensor as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor WHERE s.id_sensor = "+id_sensor+" ORDER BY ds.id_data_sensor DESC")
         result = self.cur.fetchall()
         return result
     def updateNameSensor(self,id_sensor,name_sensor):
@@ -96,6 +96,7 @@ class DataBaseThread(Thread):
                     'battery': result[0]["battery"],
                     'temperature': str(result[0]["temperature"]),
                     'humidity': str(result[0]["humidity"]),
+                    'date': str(result[0]["date_releve"]),
 
                     'id_sensor2': result[1]["id_sensor"],
                     'name2': result[1]["name"],
@@ -103,7 +104,8 @@ class DataBaseThread(Thread):
                     'Mac2': result[1]["Mac"],
                     'battery2': result[1]["battery"],
                     'temperature2': str(result[1]["temperature"]),
-                    'humidity2': str(result[1]["humidity"])
+                    'humidity2': str(result[1]["humidity"]),
+                    'date2': str(result[1]["date_releve"])
                 }, namespace='/getNewDataSensor')
             elif(len(result) != 0):
                 socketio.emit('getNewData', {
@@ -114,7 +116,8 @@ class DataBaseThread(Thread):
                     'Mac': result[0]["Mac"],
                     'battery': result[0]["battery"],
                     'temperature': str(result[0]["temperature"]),
-                    'humidity': str(result[0]["humidity"])
+                    'humidity': str(result[0]["humidity"]),
+                    'date': str(result[0]["date_releve"])
                 }, namespace='/getNewDataSensor')
             DataBaseThread.set_id_dernier(result[0]["id_sensor"])
 

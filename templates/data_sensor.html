@@ -10,6 +10,7 @@
                     <th>Batterie</th>
                     <th>Temperature</th>
                     <th>Humidite</th>
+                    <th>Date</th>
                 </tr>
     {% for row in result %}
         <tr>
@@ -19,6 +20,7 @@
             <td> {{ row.battery }} %</td>
             <td> {{ row.temperature }} °</td>
             <td> {{ row.humidity }} %</td>
+            <td> {{ row.date_releve }}</td>
         </tr>
     {% endfor %}
          </tbody>

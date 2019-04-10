@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             document.getElementById("nomSensor").innerHTML = msg.name;
             document.getElementById("idSensor").innerHTML = msg.ID;
             document.getElementById("macAdresse").innerHTML = msg.Mac;
+            document.getElementById("date").innerHTML = msg.date;
 
             if (msg.battery >= 90) {
                 document.getElementById("batterie-full").removeAttribute("style");
@@ -62,6 +63,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             document.getElementById("nomSensor2").innerHTML = msg.name2;
             document.getElementById("idSensor2").innerHTML = msg.ID2;
             document.getElementById("macAdresse2").innerHTML = msg.Mac2;
+            document.getElementById("date2").innerHTML = msg.date2;
 
             if (msg.battery2 >= 90) {
                 document.getElementById("batterie2-full").removeAttribute("style");
