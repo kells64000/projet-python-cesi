@@ -1,5 +1,8 @@
 from bluepy.btle import Scanner, DefaultDelegate
 import pymysql
+import requests
+import json
+from collections import namedtuple
 
 
 class ScanDelegate(DefaultDelegate):
@@ -101,17 +104,42 @@ class DatabaseManager():
         cursor.execute("SELECT * FROM sensor")
         return cursor.fetchall()
 
+    def insertApiData(temperature, humidity, detected_signal, id_weather_api):
+        cursor = DatabaseManager.dbConnect();
+        sqlQuery = 'INSERT INTO data_weather_api (date_releve, temperature, humidity, detected_signal, id_weather_api) VALUES (NOW(), %s,%s,%s,%s)'
+        sqlTuple = (temperature, humidity, detected_signal, id_weather_api)
+        cursor.execute(sqlQuery, sqlTuple)
+
+
+class APIManager():
+    def getWeather():
+        res = requests.get(
+            'https://api.openweathermap.org/data/2.5/weather?id=3031582&APPID=6b10008581272cd3cf7f27252a35748f')
+        data = res.json()
+        if (data['cod'] == 200):
+            temp = round(data['main']['temp'] - 273.15, 2);
+            DatabaseManager.insertApiData(temp, data['main']['humidity'], True, 2)
+        else:
+            DatabaseManager.insertApiData(None, None, False, 2)
+
 
 ################# MAIN #################
 
 while True:
+    # Récupérer météo open data
+    APIManager.getWeather()
+
+    # Récupération des infos sensors
     databaseSensors = DatabaseManager.getDatabaseDevices();
 
     # Création du scanner
     scanner = Scanner().withDelegate(ScanDelegate())
+
     # Récupération des sensors
     scanSensors = scanner.scan(10.0)
+
     # Récupération des données envoyées par les sensors
     devicesDataList = ScanDelegate.getSensorsData(databaseSensors, scanSensors)
+
     # Formatage et insertion des datas
     ScanDelegate.formatDataBeforeInsert(devicesDataList)
