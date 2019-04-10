@@ -32,14 +32,14 @@ class Database:
         id_dernier = result[0]["id_sensor"]
         return result
     def getSensor(self,id_sensor):
-        self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity FROM data_sensor as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor WHERE id_sensor = "+id_sensor)
+        self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity FROM data_sensor as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor WHERE s.id_sensor = "+id_sensor)
         result = self.cur.fetchall()
         return result
 
 class DataBaseThread(Thread):
 
     def __init__(self):
-        self.delay = 1
+        self.delay = 5
         self.con = pymysql.connect(host=host, user=user, password=password, db=db, cursorclass=pymysql.cursors.DictCursor)
         self.cur = self.con.cursor()
         global id_dernier  # Needed to modify global copy of globvar
@@ -49,11 +49,32 @@ class DataBaseThread(Thread):
     def getNewDataSensor(self):
         #infinite loop of magical random numbers
         while not thread_stop_event.isSet():
-            self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity FROM data_sensor as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor ORDER BY id_data_sensor DESC LIMIT 1")
+            self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity FROM data_sensor as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor ORDER BY id_data_sensor DESC LIMIT 2")
             result = self.cur.fetchall()
 
-            if result[0]["id_sensor"] != id_dernier:
+            #if result[0]["id_sensor"] != id_dernier:
+            if(len(result)>= 2):
                 socketio.emit('getNewData', {
+
+                    'id_sensor': result[0]["id_sensor"],
+                    'name': result[0]["name"],
+                    'ID': result[0]["ID"],
+                    'Mac': result[0]["Mac"],
+                    'battery': result[0]["battery"],
+                    'temperature': str(result[0]["temperature"]),
+                    'humidity': str(result[0]["humidity"]),
+
+                    'id_sensor2': result[1]["id_sensor"],
+                    'name2': result[1]["name"],
+                    'ID2': result[1]["ID"],
+                    'Mac2': result[1]["Mac"],
+                    'battery2': result[1]["battery"],
+                    'temperature2': str(result[1]["temperature"]),
+                    'humidity2': str(result[1]["humidity"])
+                }, namespace='/getNewDataSensor')
+            elif(len(result) != 0):
+                socketio.emit('getNewData', {
+
                     'id_sensor': result[0]["id_sensor"],
                     'name': result[0]["name"],
                     'ID': result[0]["ID"],
@@ -61,21 +82,20 @@ class DataBaseThread(Thread):
                     'battery': result[0]["battery"],
                     'temperature': str(result[0]["temperature"]),
                     'humidity': str(result[0]["humidity"])
-                }, namespace='/test')
-
-            DataBaseThread.set_globvar(result[0]["id_sensor"])
+                }, namespace='/getNewDataSensor')
+            DataBaseThread.set_id_dernier(result[0]["id_sensor"])
 
             sleep(self.delay)
 
     def run(self):
         self.getNewDataSensor()
 
-    def set_globvar(glvar):
+    def set_id_dernier(glvar):
         global id_dernier  # Needed to modify global copy of globvar
         id_dernier = glvar
 
 @app.route('/')
-def employees():
+def index():
     def db_query():
         db = Database()
         emps = db.getLastDataSensor()
@@ -90,8 +110,8 @@ def sensor(sensor_id):
     return render_template('data_sensor.html', result=emps, content_type='application/json')
 
 
-@socketio.on('connect', namespace='/test')
-def test_connect():
+@socketio.on('connect', namespace='/getNewDataSensor')
+def socket_connect():
     # need visibility of the global thread object
     global thread
     print('Client connected')
@@ -101,16 +121,10 @@ def test_connect():
         thread = DataBaseThread()
         thread.start()
 
-@socketio.on('disconnect', namespace='/test')
-def test_disconnect():
+@socketio.on('disconnect', namespace='/getNewDataSensor')
+def socket_disconnect():
     print('Client disconnected')
 
 
 if __name__ == '__main__':
     socketio.run(app)
-
-
-
-
-
-
