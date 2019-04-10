@@ -4,7 +4,7 @@ var idCapteur1 = 0;
 var idCapteur2 = 0;
 
 $(document).ready(function(){
-    alert("test");
+
     //connect to the socket server.
     var socket = io.connect('http://' + document.domain + ':' + location.port + '/getNewDataSensor');
 

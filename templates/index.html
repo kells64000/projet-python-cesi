@@ -1,4 +1,7 @@
 {% extends "layout/app.html" %}
+{% block title %}
+    <title>Station meteo</title>
+{% endblock %}
 {% block content %}
     <div class="container-fluid h100 has-background-grey">
         <div class="colulms">
@@ -12,7 +15,7 @@
                 <div class="card">
                     <div class="card-image">
                         <figure class="image is-2by1">
-                            <a href="/sensor/id">
+                            <a href="/sensor/">
                                 <img src="https://picsum.photos/640/320/?85" alt="sensor">
                             </a>
                         </figure>
@@ -28,19 +31,23 @@
                         <div class="content">
                             <div>
                                 <i class="fas fa-hdd"></i>
-                                Mac adresse :<span id="macAdresse"></span>
+                                Mac adresse : <span id="macAdresse"></span>
                             </div>
                             <div>
-                                <i class="fas fa-battery-empty"></i>
-                                <i class="fas fa-battery-quarter"></i>
-                                <i class="fas fa-battery-half"></i>
-                                <i class="fas fa-battery-full"></i>
-                                Batterie :<span id="batterie"></span>%
+                                <i class="fas fa-battery-empty" style="display: none"></i>
+                                <i class="fas fa-battery-quarter" style="display: none"></i>
+                                <i class="fas fa-battery-half" style="display: none"></i>
+                                <i class="fas fa-battery-full" style="display: none"></i>
+                                Batterie : <span id="batterie"></span>%
                             </div>
                             <br>
                             <div>
+                                <i class="fas fa-clock"></i>
+                                Date : <span id="date"></span>
+                            </div>
+                            <div>
                                 <i class="fas fa-tint"></i>
-                                Humidité :<span id="humidite"></span>%
+                                Humidité : <span id="humidite"></span>%
                             </div>
                             <div>
                                 <i class="fas fa-temperature-high"></i>
@@ -70,23 +77,61 @@
                         <div class="content">
                             <div>
                                 <i class="fas fa-hdd"></i>
-                                Mac adresse :<span id="macAdresse2"></span>
+                                Mac adresse : <span id="macAdresse2"></span>
                             </div>
                             <div>
-                                <i class="fas fa-battery-empty"></i>
-                                <i class="fas fa-battery-quarter"></i>
-                                <i class="fas fa-battery-half"></i>
-                                <i class="fas fa-battery-full"></i>
-                                Batterie :<span id="batterie2"></span>%
+                                <i class="fas fa-battery-empty" style="display: none"></i>
+                                <i class="fas fa-battery-quarter" style="display: none"></i>
+                                <i class="fas fa-battery-half" style="display: none"></i>
+                                <i class="fas fa-battery-full" style="display: none"></i>
+                                Batterie : <span id="batterie2"></span>%
                             </div>
                             <br>
                             <div>
+                                <i class="fas fa-clock"></i>
+                                Date : <span id="date2"></span>
+                            </div>
+                            <div>
                                 <i class="fas fa-tint"></i>
-                                Humidité :<span id="humidite2"></span>%
+                                Humidité : <span id="humidite2"></span>%
                             </div>
                             <div>
                                 <i class="fas fa-temperature-high"></i>
                                 Temperature : <span id="temperature2"></span>°
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="card">
+                    <div class="card-image">
+                        <figure class="image is-2by1">
+                            <a href="/sensor/">
+                                <img src="https://picsum.photos/640/320/?88" alt="sensor">
+                            </a>
+                        </figure>
+                    </div>
+                    <div class="card-content">
+                        <div class="media">
+                            <div class="media-content has-text-centered">
+                                <p class="title is-4"><i class="fas fa-edit"></i><span id="nomApi"></span></p>
+                                <p class="subtitle is-6"><span id="idApi"></span></p>
+                            </div>
+                        </div>
+
+                        <div class="content">
+                            <div>
+                                <i class="fas fa-clock"></i>
+                                Date : <span id="date3"></span>
+                            </div>
+                            <div>
+                                <i class="fas fa-tint"></i>
+                                Humidité : <span id="humidite3"></span>%
+                            </div>
+                            <div>
+                                <i class="fas fa-temperature-high"></i>
+                                Temperature : <span id="temperature3"></span>°
                             </div>
                         </div>
                     </div>
