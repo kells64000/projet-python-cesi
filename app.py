@@ -15,7 +15,7 @@ thread = Thread()
 thread_stop_event = Event()
 id_dernier = 0
 
-host = "127.0.0.1"
+host = "192.168.43.58"
 user = "pi"
 password = "python2019"
 db = "station-meteo"
