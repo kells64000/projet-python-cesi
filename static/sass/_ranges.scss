@@ -1,0 +1,27 @@
+#range {
+
+  &-intervalle {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: linear-gradient(to right, rgb(255,255,255) , rgb(0,0,0) );
+    width: 100%;
+  }
+
+  &-temperature {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: linear-gradient(to right, rgb(255,255,255) , rgb(255,0,0) );
+    width: 100%;
+  }
+
+  &-humidite {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: -moz-linear-gradient(to right, rgb(255,255,255) , rgb(0,0,255) );
+    width: 100%;
+  }
+
+}
+
+
+
