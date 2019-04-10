@@ -1,13 +1,5 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Sensor id</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-    <link rel="stylesheet" href="/static/css/style.css">
-</head>
-<body>
+{% extends "layout/app.html" %}
+{% block content %}
     {% if result %}
         <table id="data_sensor" style="width:100%">
             <tbody>
@@ -32,5 +24,4 @@
          </tbody>
         </table>
     {% endif %}
-</body>
-</html>
+{% endblock %}
