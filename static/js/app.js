@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         if (msg.id_sensor != idCapteur1 && msg.id_sensor != null) {
 
             idCapteur1 = msg.id_sensor;
+            document.getElementById("sensor1").setAttribute("href", "/sensor/" + idCapteur1);
             document.getElementById("nomSensor").innerHTML = msg.name;
             document.getElementById("idSensor").innerHTML = msg.ID;
             document.getElementById("macAdresse").innerHTML = msg.Mac;
@@ -57,6 +58,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         if (msg.id_sensor2 != idCapteur2 && msg.id_sensor2 != null) {
 
             idCapteur2 = msg.id_sensor2;
+            document.getElementById("sensor2").setAttribute("href", "/sensor/" + idCapteur2);
             document.getElementById("nomSensor2").innerHTML = msg.name2;
             document.getElementById("idSensor2").innerHTML = msg.ID2;
             document.getElementById("macAdresse2").innerHTML = msg.Mac2;
