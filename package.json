@@ -4,8 +4,7 @@
   "description": "station-meteo",
   "main": "app.js",
   "scripts": {
-    "dev": "webpack --mode development --env.dist=false",
-    "dev:dist": "webpack --mode development",
+    "dev": "webpack --mode development",
     "prod": "webpack --mode production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
