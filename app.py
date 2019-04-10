@@ -27,12 +27,16 @@ class Database:
                                    DictCursor)
         self.cur = self.con.cursor()
     def getLastDataSensor(self):
-        self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity FROM (SELECT DISTINCT id_sensor, id_data_sensor,battery,temperature,humidity FROM data_sensor ORDER BY id_data_sensor DESC) as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor GROUP BY s.id_sensor ORDER BY id_sensor DESC LIMIT 3")
+        self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity FROM (SELECT DISTINCT id_sensor, id_data_sensor,battery,temperature,humidity,date_releve FROM data_sensor ORDER BY id_data_sensor DESC) as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor GROUP BY s.id_sensor ORDER BY id_sensor DESC LIMIT 3")
         result = self.cur.fetchall()
         id_dernier = result[0]["id_sensor"]
         return result
     def getSensor(self,id_sensor):
-        self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity FROM data_sensor as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor WHERE s.id_sensor = "+id_sensor)
+        self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity,ds.date_releve FROM data_sensor as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor WHERE s.id_sensor = "+id_sensor)
+        result = self.cur.fetchall()
+        return result
+    def updateNameSensor(self,id_sensor,name_sensor):
+        self.cur.execute("UPDATE `sensor` SET `name`= '"+name_sensor+"' WHERE `id_sensor` = "+id_sensor)
         result = self.cur.fetchall()
         return result
 
@@ -49,7 +53,7 @@ class DataBaseThread(Thread):
     def getNewDataSensor(self):
         #infinite loop of magical random numbers
         while not thread_stop_event.isSet():
-            self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity FROM (SELECT DISTINCT id_sensor, id_data_sensor,battery,temperature,humidity FROM data_sensor ORDER BY id_data_sensor DESC) as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor GROUP BY s.id_sensor ORDER BY id_sensor DESC LIMIT 3")
+            self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity,ds.date_releve FROM (SELECT DISTINCT id_sensor, id_data_sensor,battery,temperature,humidity,date_releve FROM data_sensor ORDER BY id_data_sensor DESC) as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor GROUP BY s.id_sensor ORDER BY id_sensor DESC LIMIT 3")
             result = self.cur.fetchall()
 
             if (len(result) >= 3):
@@ -62,6 +66,7 @@ class DataBaseThread(Thread):
                     'battery': result[0]["battery"],
                     'temperature': str(result[0]["temperature"]),
                     'humidity': str(result[0]["humidity"]),
+                    'date': str(result[0]["date_releve"]),
 
                     'id_sensor2': result[1]["id_sensor"],
                     'name2': result[1]["name"],
@@ -70,6 +75,7 @@ class DataBaseThread(Thread):
                     'battery2': result[1]["battery"],
                     'temperature2': str(result[1]["temperature"]),
                     'humidity2': str(result[1]["humidity"]),
+                    'date2': str(result[1]["date_releve"]),
 
                     'id_sensor3': result[2]["id_sensor"],
                     'name3': result[2]["name"],
@@ -77,7 +83,8 @@ class DataBaseThread(Thread):
                     'Mac3': result[2]["Mac"],
                     'battery3': result[2]["battery"],
                     'temperature3': str(result[2]["temperature"]),
-                    'humidity3': str(result[2]["humidity"])
+                    'humidity3': str(result[2]["humidity"]),
+                    'date3': str(result[2]["date_releve"])
                 }, namespace='/getNewDataSensor')
             elif(len(result)>= 2):
                 socketio.emit('getNewData', {
@@ -134,6 +141,12 @@ def sensor(sensor_id):
     db = Database()
     emps = db.getSensor(sensor_id)
     return render_template('data_sensor.html', result=emps, content_type='application/json')
+
+@app.route('/sensorName/<sensor_id>/<sensor_name>')
+def sensorName(sensor_id,sensor_name):
+    db = Database()
+    emps = db.updateNameSensor(sensor_id,sensor_name)
+    return render_template('index.html', result=emps, content_type='application/json')
 
 
 @socketio.on('connect', namespace='/getNewDataSensor')
