@@ -27,7 +27,7 @@ class Database:
                                    DictCursor)
         self.cur = self.con.cursor()
     def getLastDataSensor(self):
-        self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity FROM data_sensor as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor ORDER BY id_data_sensor DESC LIMIT 2")
+        self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity FROM (SELECT DISTINCT id_sensor, id_data_sensor,battery,temperature,humidity FROM data_sensor ORDER BY id_data_sensor DESC) as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor GROUP BY s.id_sensor ORDER BY id_data_sensor DESC LIMIT 3")
         result = self.cur.fetchall()
         id_dernier = result[0]["id_sensor"]
         return result
@@ -49,7 +49,7 @@ class DataBaseThread(Thread):
     def getNewDataSensor(self):
         #infinite loop of magical random numbers
         while not thread_stop_event.isSet():
-            self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity FROM data_sensor as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor ORDER BY id_data_sensor DESC LIMIT 2")
+            self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity FROM (SELECT DISTINCT id_sensor, id_data_sensor,battery,temperature,humidity FROM data_sensor ORDER BY id_data_sensor DESC) as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor GROUP BY s.id_sensor ORDER BY id_data_sensor DESC LIMIT 3")
             result = self.cur.fetchall()
 
             #if result[0]["id_sensor"] != id_dernier:
