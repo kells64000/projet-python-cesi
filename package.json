@@ -1,0 +1,38 @@
+{
+  "name": "projet-python-cesi",
+  "version": "1.0.0",
+  "description": "station-meteo",
+  "main": "app.js",
+  "scripts": {
+    "dev": "webpack --mode development --env.dist=false",
+    "dev:dist": "webpack --mode development",
+    "prod": "webpack --mode production",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.3",
+    "@fortawesome/fontawesome-free": "^5.8.1",
+    "babel-loader": "^8.0.5",
+    "bulma": "^0.7.4",
+    "css-loader": "^2.1.1",
+    "extract-text-webpack-plugin": "^0.8.2",
+    "manifest-revision-webpack-plugin": "0.0.5",
+    "mini-css-extract-plugin": "^0.6.0",
+    "node-sass": "^4.11.0",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.12.4",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0",
+    "webpack-dev-server": "^3.3.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kells64000/projet-python-cesi.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kells64000/projet-python-cesi/issues"
+  },
+  "homepage": "https://github.com/kells64000/projet-python-cesi#readme"
+}

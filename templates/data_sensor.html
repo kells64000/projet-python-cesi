@@ -1,4 +1,7 @@
 {% extends "layout/app.html" %}
+{% block title %}
+    <title id="title">{{ result[0].name }}</title>
+{% endblock %}
 {% block content %}
     {% if result %}
         <table id="data_sensor" style="width:100%">
