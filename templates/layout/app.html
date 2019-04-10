@@ -11,5 +11,75 @@
 
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
     <script type="text/javascript" src="/static/build/public/js/app.js"></script>
+    <script>
+        function editName(e) {
+
+            e.parentNode.style.display = 'none';
+
+
+            let theFirstChild = e.parentNode.nextSibling;
+
+            let input = document.createElement("div");
+
+            input.classList.add("field");
+            input.classList.add("has-addons");
+            input.classList.add("has-text-centered");
+
+            input.innerHTML = "" +
+                "<div class='control'>" +
+                "<input class='input' type='text' placeholder='nouveau nom'>" +
+                "</div>" +
+                "<div class='control'>" +
+                "<a class='button is-success' onclick='validRename(this)'>" +
+                "<i class='fas fa-check'></i>" +
+                "</a>" +
+                "<a class='button is-danger' onclick='cancelRename(this)'>" +
+                "<i class='fas fa-times'></i>" +
+                "</a>" +
+                "</div>" +
+                "</div>";
+
+            theFirstChild.parentNode.insertBefore(input, theFirstChild);
+        }
+
+        function cancelRename(e) {
+
+            e.parentNode.parentElement.style.display = 'none';
+
+            let name = e.parentNode.parentElement.parentElement.firstChild.nextSibling;
+
+            name.style.display = 'block';
+        }
+
+        function validRename(e) {
+
+            let request = new XMLHttpRequest();
+            request.open('POST', '/sensorName/1/test', true);
+            request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+
+            request.onload = function() {
+              if (request.status >= 200 && request.status < 400) {
+                // Success!
+                var resp = request.responseText;
+                {#alert(resp);#}
+
+                e.parentNode.parentElement.style.display = 'none';
+                let name = e.parentNode.parentElement.parentElement.firstChild.nextSibling;
+                name.style.display = 'block';
+                {#name.firstChild.firstChild.html(resp)#}
+
+              } else {
+                // We reached our target server, but it returned an error
+
+              }
+            };
+
+            request.onerror = function() {
+              // There was a connection error of some sort
+            };
+
+            request.send();
+        }
+    </script>
 </body>
 </html>
