@@ -136,7 +136,7 @@ def index():
     res = db_query()
     return render_template('index.html', result=res, content_type='application/json')
 
-@app.route('/sensor/<sensor_id>')
+@app.route('/sensor/<sensor_id>' , methods = ['POST'])
 def sensor(sensor_id):
     db = Database()
     emps = db.getSensor(sensor_id)
