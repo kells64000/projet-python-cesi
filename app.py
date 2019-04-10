@@ -26,8 +26,7 @@ thread = Thread()
 thread_stop_event = Event()
 id_dernier = 0
 
-host = "127.0.0.1"
-# host = "192.168.43.58"
+host = "192.168.43.58"
 user = "pi"
 password = "python2019"
 db = "station-meteo"
@@ -169,7 +168,7 @@ def sensor(sensor_id):
 def sensorName(sensor_id,sensor_name):
     db = Database()
     emps = db.updateNameSensor(sensor_id,sensor_name)
-    return render_template('index.html', result=emps, content_type='application/json')
+    return emps
 
 
 @socketio.on('connect', namespace='/getNewDataSensor')
