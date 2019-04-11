@@ -53,24 +53,38 @@
 
         function validRename(e) {
 
+            let valRename = e.parentNode.parentElement.querySelector("input").value;
+
+            let getId = e.parentNode.parentElement.parentElement.firstChild.nextSibling.nextSibling.nextSibling.nextSibling.id;
+
+            let parseId = getId.slice(4);
+            let idLenght = parseId.length;
+
+            let route = parseId.substring(0, idLenght -1);
+            let id = parseId.substring(idLenght -1, idLenght);
+
+            if(route === "Sensor") {
+                route = "sensorName";
+            } else {
+                route = "apiName";
+            }
+
             let request = new XMLHttpRequest();
-            request.open('POST', '/sensorName/1/test', true);
+            request.open('POST', '/'+ route +'/'+ id +'/' + valRename, true);
             request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 
             request.onload = function() {
               if (request.status >= 200 && request.status < 400) {
                 // Success!
-                var resp = request.responseText;
-                {#alert(resp);#}
 
                 e.parentNode.parentElement.style.display = 'none';
                 let name = e.parentNode.parentElement.parentElement.firstChild.nextSibling;
                 name.style.display = 'block';
-                {#name.firstChild.firstChild.html(resp)#}
+
+                name.firstChild.nextSibling.innerHTML = request.responseText;
 
               } else {
                 // We reached our target server, but it returned an error
-
               }
             };
 
