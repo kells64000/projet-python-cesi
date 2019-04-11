@@ -47,6 +47,12 @@ class Database:
         self.cur.execute("SELECT * FROM data_sensor as ds WHERE `date_releve` < DATE(DATE_sub(NOW(), INTERVAL 5 MINUTE)) AND ds.id_sensor = "+id_sensor+" ORDER BY ds.id_data_sensor DESC")
         result = self.cur.fetchall()
         return result
+
+    def getSensorGraphData(self,id_sensor):
+        self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity,ds.date_releve FROM data_sensor as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor WHERE s.id_sensor = "+id_sensor+" ORDER BY ds.id_data_sensor ASC LIMIT 20")
+        result = self.cur.fetchall()
+        return result
+
     def updateNameSensor(self,id_sensor,name_sensor):
         self.cur.execute("UPDATE `sensor` SET `name`= '"+name_sensor+"' WHERE `id_sensor` = "+id_sensor)
         result = self.cur.fetchall()
@@ -207,7 +213,29 @@ def index():
 def sensor(sensor_id):
     db = Database()
     emps = db.getSensor(sensor_id)
-    return render_template('data_sensor.html', result=emps, content_type='application/json')
+    graphData = db.getSensorGraphData(sensor_id)
+    sortResults = []
+    for elt in graphData:
+        if (elt['temperature'] != None):
+            print(elt['temperature'])
+            sortResults.append(elt)
+    return render_template('data_sensor.html', result=emps, sortResults=sortResults, content_type='application/json', max=50)
+
+@app.route('/sensor/<sensor_id>/graph')
+def sensorGraph(sensor_id):
+    db = Database()
+    emps = db.getSensorGraphData(sensor_id)
+    print('result = ', emps[0])
+    print('result = ', emps[0]['date_releve'])
+    app.config["CACHE_TYPE"] = "null"
+    sortResults = []
+    for elt in emps:
+        if(elt['temperature'] != None):
+            print(elt['temperature'])
+            sortResults.append(elt)
+
+    print('SORT RESULTS', sortResults)
+    return render_template('graph.html', sortResults=emps, content_type='application/json', max=50)
 
 @app.route('/sensorName/<sensor_id>/<sensor_name>', methods = ['POST'])
 def sensorName(sensor_id,sensor_name):
