@@ -1,5 +1,6 @@
 var idDataSensor1 = 0;
 var idDataSensor2 = 0;
+var idDataSensor3 = 0;
 
 document.addEventListener("DOMContentLoaded", function (event) {
 
@@ -9,13 +10,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
     //receive details from server
     socket.on('getNewData', function (msg) {
         //maintain a list of ten numbers
-        alert(msg.idDataSensor1);
-        alert(msg.idDataSensor2);
-        alert(msg.idDataSensor3);
         if (msg.id_data_sensor !== idDataSensor1 && msg.id_sensor !== null) {
 
+            //alert(msg.id_data_sensor);
             idDataSensor1 = msg.id_data_sensor;
-            document.getElementById("sensor1").setAttribute("href", "/sensor/" + idCapteur1);
+            document.getElementById("sensor1").setAttribute("href", "/sensor/" + idDataSensor1);
             document.getElementById("nomSensor").innerHTML = msg.name;
             document.getElementById("idSensor").innerHTML = msg.ID;
             document.getElementById("macAdresse").innerHTML = msg.Mac;
@@ -29,9 +28,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
         }
 
         if (msg.id_data_sensor2 !== idDataSensor2 && msg.id_sensor2 !== null) {
+            //alert(msg.id_data_sensor2);
 
             idDataSensor2 = msg.id_data_sensor2;
-            document.getElementById("sensor2").setAttribute("href", "/sensor/" + idCapteur2);
+            document.getElementById("sensor2").setAttribute("href", "/sensor/" + idDataSensor2);
             document.getElementById("nomSensor2").innerHTML = msg.name2;
             document.getElementById("idSensor2").innerHTML = msg.ID2;
             document.getElementById("macAdresse2").innerHTML = msg.Mac2;
@@ -46,16 +46,17 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
         if (msg.id_data_sensor3 !== idDataSensor3 && msg.id_sensor3 !== null) {
 
+            //alert(msg.id_data_sensor3);
             idDataSensor3 = msg.id_data_sensor3;
-            document.getElementById("sensor3").setAttribute("href", "/sensor/" + idCapteur3);
+            //document.getElementById("sensor3").setAttribute("href", "/sensor/" + idDataSensor3);
             document.getElementById("nomSensor3").innerHTML = msg.name3;
-            document.getElementById("idSensor3").innerHTML = msg.ID3;
+            //document.getElementById("idSensor3").innerHTML = msg.ID3;
             //document.getElementById("macAdresse3").innerHTML = msg.Mac3;
             document.getElementById("date3").innerHTML = msg.date3;
 
             checkSignal(msg.signal3, 3);
-            checkBatterie(msg.battery3, 3);
-            document.getElementById("batterie3").innerHTML = msg.battery3;
+            //checkBatterie(msg.battery3, 3);
+            //document.getElementById("batterie3").innerHTML = msg.battery3;
             document.getElementById("humidite3").innerHTML = msg.humidity3;
             document.getElementById("temperature3").innerHTML = msg.temperature3;
         }
@@ -114,9 +115,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
         } else if (id === 2) {
             signalName = "signal2";
         }
-        // else {
-        //     signalName = "signal3";
-        // }
+        else {
+            signalName = "signal3";
+        }
 
         let signalHtml = document.getElementById(signalName);
 
