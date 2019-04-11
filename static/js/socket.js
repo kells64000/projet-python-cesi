@@ -12,9 +12,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
         //maintain a list of ten numbers
         if (msg.id_data_sensor !== idDataSensor1 && msg.id_sensor !== null) {
 
-            //alert(msg.id_data_sensor);
             idDataSensor1 = msg.id_data_sensor;
-            document.getElementById("sensor1").setAttribute("href", "/sensor/" + idDataSensor1);
+            document.getElementById("sensor1").setAttribute("href", "/sensor/" + msg.id_sensor);
             document.getElementById("nomSensor").innerHTML = msg.name;
             document.getElementById("idSensor").innerHTML = msg.ID;
             document.getElementById("macAdresse").innerHTML = msg.Mac;
@@ -28,10 +27,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
         }
 
         if (msg.id_data_sensor2 !== idDataSensor2 && msg.id_sensor2 !== null) {
-            //alert(msg.id_data_sensor2);
 
             idDataSensor2 = msg.id_data_sensor2;
-            document.getElementById("sensor2").setAttribute("href", "/sensor/" + idDataSensor2);
+            document.getElementById("sensor2").setAttribute("href", "/sensor/" + msg.id_sensor2);
             document.getElementById("nomSensor2").innerHTML = msg.name2;
             document.getElementById("idSensor2").innerHTML = msg.ID2;
             document.getElementById("macAdresse2").innerHTML = msg.Mac2;
@@ -46,17 +44,12 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
         if (msg.id_data_sensor3 !== idDataSensor3 && msg.id_sensor3 !== null) {
 
-            //alert(msg.id_data_sensor3);
             idDataSensor3 = msg.id_data_sensor3;
-            //document.getElementById("sensor3").setAttribute("href", "/sensor/" + idDataSensor3);
+            // document.getElementById("sensor3").setAttribute("href", "/sensor/3");
             document.getElementById("nomSensor3").innerHTML = msg.name3;
-            //document.getElementById("idSensor3").innerHTML = msg.ID3;
-            //document.getElementById("macAdresse3").innerHTML = msg.Mac3;
             document.getElementById("date3").innerHTML = msg.date3;
 
             checkSignal(msg.signal3, 3);
-            //checkBatterie(msg.battery3, 3);
-            //document.getElementById("batterie3").innerHTML = msg.battery3;
             document.getElementById("humidite3").innerHTML = msg.humidity3;
             document.getElementById("temperature3").innerHTML = msg.temperature3;
         }
