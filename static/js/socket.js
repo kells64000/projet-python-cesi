@@ -1,5 +1,5 @@
-var idCapteur1 = 0;
-var idCapteur2 = 0;
+var idDataSensor1 = 0;
+var idDataSensor2 = 0;
 
 document.addEventListener("DOMContentLoaded", function (event) {
 
@@ -9,9 +9,12 @@ document.addEventListener("DOMContentLoaded", function (event) {
     //receive details from server
     socket.on('getNewData', function (msg) {
         //maintain a list of ten numbers
-        if (msg.id_sensor !== idCapteur1 && msg.id_sensor !== null) {
+        alert(msg.idDataSensor1);
+        alert(msg.idDataSensor2);
+        alert(msg.idDataSensor3);
+        if (msg.id_data_sensor !== idDataSensor1 && msg.id_sensor !== null) {
 
-            idCapteur1 = msg.id_sensor;
+            idDataSensor1 = msg.id_data_sensor;
             document.getElementById("sensor1").setAttribute("href", "/sensor/" + idCapteur1);
             document.getElementById("nomSensor").innerHTML = msg.name;
             document.getElementById("idSensor").innerHTML = msg.ID;
@@ -25,9 +28,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
             document.getElementById("temperature").innerHTML = msg.temperature;
         }
 
-        if (msg.id_sensor2 !== idCapteur2 && msg.id_sensor2 !== null) {
+        if (msg.id_data_sensor2 !== idDataSensor2 && msg.id_sensor2 !== null) {
 
-            idCapteur2 = msg.id_sensor2;
+            idDataSensor2 = msg.id_data_sensor2;
             document.getElementById("sensor2").setAttribute("href", "/sensor/" + idCapteur2);
             document.getElementById("nomSensor2").innerHTML = msg.name2;
             document.getElementById("idSensor2").innerHTML = msg.ID2;
@@ -39,6 +42,22 @@ document.addEventListener("DOMContentLoaded", function (event) {
             document.getElementById("batterie2").innerHTML = msg.battery2;
             document.getElementById("humidite2").innerHTML = msg.humidity2;
             document.getElementById("temperature2").innerHTML = msg.temperature2;
+        }
+
+        if (msg.id_data_sensor3 !== idDataSensor3 && msg.id_sensor3 !== null) {
+
+            idDataSensor3 = msg.id_data_sensor3;
+            document.getElementById("sensor3").setAttribute("href", "/sensor/" + idCapteur3);
+            document.getElementById("nomSensor3").innerHTML = msg.name3;
+            document.getElementById("idSensor3").innerHTML = msg.ID3;
+            //document.getElementById("macAdresse3").innerHTML = msg.Mac3;
+            document.getElementById("date3").innerHTML = msg.date3;
+
+            checkSignal(msg.signal3, 3);
+            checkBatterie(msg.battery3, 3);
+            document.getElementById("batterie3").innerHTML = msg.battery3;
+            document.getElementById("humidite3").innerHTML = msg.humidity3;
+            document.getElementById("temperature3").innerHTML = msg.temperature3;
         }
     });
 

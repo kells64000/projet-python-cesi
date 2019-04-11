@@ -49,7 +49,7 @@ class Database:
     def updateNameSensor(self,id_sensor,name_sensor):
         self.cur.execute("UPDATE `sensor` SET `name`= '"+name_sensor+"' WHERE `id_sensor` = "+id_sensor)
         result = self.cur.fetchall()
-        return result
+        return name_sensor
 
 class DataBaseThread(Thread):
 
@@ -64,13 +64,17 @@ class DataBaseThread(Thread):
     def getNewDataSensor(self):
         #infinite loop of magical random numbers
         while not thread_stop_event.isSet():
-            self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.detected_signal,ds.battery,ds.temperature,ds.humidity,ds.date_releve FROM (SELECT DISTINCT id_sensor, id_data_sensor,detected_signal,battery,temperature,humidity,date_releve FROM data_sensor ORDER BY id_data_sensor DESC) as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor GROUP BY s.id_sensor ORDER BY id_sensor LIMIT 3")
+            self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.id_data_sensor,ds.detected_signal,ds.battery,ds.temperature,ds.humidity,ds.date_releve FROM (SELECT DISTINCT id_sensor, id_data_sensor,detected_signal,battery,temperature,humidity,date_releve FROM data_sensor ORDER BY id_data_sensor DESC) as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor GROUP BY s.id_sensor ORDER BY id_sensor LIMIT 3")
             result = self.cur.fetchall()
 
-            if (len(result) >= 3):
+            self.cur.execute("SELECT * FROM data_weather_api as dwa LEFT JOIN weather_api as wa on wa.id_weather_api = dwa.id_weather_api GROUP BY wa.id_weather_api ORDER BY dwa.id_data_weather_api DESC LIMIT 1")
+            resultApi = self.cur.fetchall()
+
+            if (len(result) >= 2 and resultApi != 0):
                 socketio.emit('getNewData', {
 
                     'id_sensor': result[0]["id_sensor"],
+                    'id_data_sensor': result[0]["id_data_sensor"],
                     'name': result[0]["name"],
                     'ID': result[0]["ID"],
                     'Mac': result[0]["Mac"],
@@ -81,6 +85,7 @@ class DataBaseThread(Thread):
                     'date': str(result[0]["date_releve"].strftime('%d/%m/%Y %H:%M:%S')),
 
                     'id_sensor2': result[1]["id_sensor"],
+                    'id_data_sensor2': result[1]["id_data_sensor"],
                     'name2': result[1]["name"],
                     'ID2': result[1]["ID"],
                     'Mac2': result[1]["Mac"],
@@ -90,20 +95,22 @@ class DataBaseThread(Thread):
                     'humidity2': str(result[1]["humidity"]),
                     'date2': str(result[1]["date_releve"].strftime('%d/%m/%Y %H:%M:%S')),
 
-                    'id_sensor3': result[2]["id_sensor"],
-                    'name3': result[2]["name"],
-                    'ID3': result[2]["ID"],
-                    'Mac3': result[2]["Mac"],
-                    # 'signal3': result[2]["detected_signal"],
-                    'battery3': result[2]["battery"],
-                    'temperature3': str(result[2]["temperature"]),
-                    'humidity3': str(result[2]["humidity"]),
-                    'date3': str(result[2]["date_releve"].strftime('%d/%m/%Y %H:%M:%S'))
+                    'id_sensor3': resultApi[0]["id_weather_api"],
+                    'id_data_sensor3': resultApi[0]["id_data_weather_api"],
+                    'name3': resultApi[0]["name"],
+                    #'ID3': resultApi[0]["ID"],
+                    #'Mac3': resultApi[0]["Mac"],
+                    'signal3': resultApi[0]["detected_signal"],
+                    #'battery3': resultApi[0]["battery"],
+                    'temperature3': str(resultApi[0]["temperature"]),
+                    'humidity3': str(resultApi[0]["humidity"]),
+                    'date3': str(resultApi[0]["date_releve"].strftime('%d/%m/%Y %H:%M:%S'))
                 }, namespace='/getNewDataSensor')
             elif(len(result)>= 2):
                 socketio.emit('getNewData', {
 
                     'id_sensor': result[0]["id_sensor"],
+                    'id_data_sensor': result[0]["id_data_sensor"],
                     'name': result[0]["name"],
                     'ID': result[0]["ID"],
                     'Mac': result[0]["Mac"],
@@ -114,6 +121,7 @@ class DataBaseThread(Thread):
                     'date': str(result[0]["date_releve"].strftime('%d/%m/%Y %H:%M:%S')),
 
                     'id_sensor2': result[1]["id_sensor"],
+                    'id_data_sensor2': result[1]["id_data_sensor"],
                     'name2': result[1]["name"],
                     'ID2': result[1]["ID"],
                     'Mac2': result[1]["Mac"],
@@ -127,6 +135,7 @@ class DataBaseThread(Thread):
                 socketio.emit('getNewData', {
 
                     'id_sensor': result[0]["id_sensor"],
+                    'id_data_sensor': result[0]["id_data_sensor"],
                     'name': result[0]["name"],
                     'ID': result[0]["ID"],
                     'Mac': result[0]["Mac"],
