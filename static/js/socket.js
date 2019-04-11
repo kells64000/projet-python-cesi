@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     //connect to the socket server.
     var socket = io.connect('http://' + document.domain + ':' + location.port + '/getNewDataSensor');
-
     //receive details from server
     socket.on('getNewData', function (msg) {
         //maintain a list of ten numbers
@@ -117,16 +116,13 @@ document.addEventListener("DOMContentLoaded", function (event) {
         if (signal === 0) {
             signalHtml .classList.remove('has-background-success');
             signalHtml .classList.add('has-background-danger');
-
-            signalText = document.createTextNode(' Déconnecté');
-            signalHtml.parentNode.insertBefore(signalText, signalHtml.nextSibling);
+            signalHtml.nextSibling.nextSibling.innerText = 'Déconnecté';
 
         } else {
             signalHtml.classList.remove('has-background-danger');
             signalHtml.classList.add('has-background-success');
+            signalHtml.nextSibling.nextSibling.innerText = 'Connecté';
 
-            signalText = document.createTextNode(' Connecté');
-            signalHtml.parentNode.insertBefore(signalText, signalHtml.nextSibling);
         }
     }
 });

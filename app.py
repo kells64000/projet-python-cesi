@@ -44,12 +44,17 @@ class Database:
         id_dernier = result[0]["id_sensor"]
         return result
     def getSensor(self,id_sensor):
-        self.cur.execute("SELECT * FROM data_sensor as ds WHERE `date_releve` < DATE(DATE_sub(NOW(), INTERVAL 5 MINUTE)) AND ds.id_sensor = "+id_sensor+" ORDER BY ds.id_data_sensor DESC")
+        self.cur.execute("SELECT FROM_UNIXTIME((UNIX_TIMESTAMP(`date_releve`) div (5*60))*(5*60)+(5*60)) as date_releve,ds.temperature,ds.battery,ds.humidity,s.name FROM data_sensor as ds LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor WHERE ds.id_sensor = "+id_sensor+" GROUP BY 1 ORDER BY ds.id_data_sensor DESC")
         result = self.cur.fetchall()
         return result
 
     def getSensorGraphData(self,id_sensor):
         self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity,ds.date_releve FROM data_sensor as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor WHERE s.id_sensor = "+id_sensor+" ORDER BY ds.id_data_sensor ASC LIMIT 20")
+        result = self.cur.fetchall()
+        return result
+
+    def getParametre(self):
+        self.cur.execute("SELECT * FROM `parametre`")
         result = self.cur.fetchall()
         return result
 
@@ -61,7 +66,10 @@ class Database:
         self.cur.execute("UPDATE `weather_api` SET `name`= '"+name_api+"' WHERE `id_weather_api` = "+id_api)
         result = self.cur.fetchall()
         return name_api
-
+    def updateParametre(self,id_param,Intervalle,tempMax,tempMin,humiMax,humiMin):
+        self.cur.execute("UPDATE `parametre` SET `Intervalle`= '"+Intervalle+"',`temperatureMin`= '"+tempMin+"',`temperatureMax`= '"+tempMax+"',`humiditeMin`= '"+humiMin+"',`humiditeMax`= '"+humiMax+"'  WHERE `id_parametre` = "+id_param)
+        result = self.cur.fetchall()
+        return result
 class DataBaseThread(Thread):
 
     def __init__(self):

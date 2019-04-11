@@ -7,7 +7,7 @@
     <div class="container-fluid">
 
         <a href="/" class="button is-large is-grey mt-5 ml-5"><i class="fas fa-home fa-2x"></i></a>
-        <h1 class="title has-text-centered has-text-white pb-5 pt-3">{{ result[0].name }}</h1>
+        <h1 class="title has-text-centered has-text-black pb-5 pt-3">{{ result[0].name }}</h1>
 
         <div class="columns">
             <div class="column is-4">
@@ -134,9 +134,15 @@
 {#                                <td class="has-text-centered"> {{ row.name }}</td>#}
 {#                                <td class="has-text-centered"> {{ row.ID }}</td>#}
 {#                                <td class="has-text-centered"> {{ row.Mac }}</td>#}
+                                {% if  row.battery != None %}
                                 <td class="has-text-centered"> {{ row.battery }} %</td>
                                 <td class="has-text-centered"> {{ row.temperature }} °</td>
                                 <td class="has-text-centered"> {{ row.humidity }} %</td>
+                                {% else %}
+                                <td class="has-text-centered"> {{ row.battery }}</td>
+                                <td class="has-text-centered"> {{ row.temperature }}</td>
+                                <td class="has-text-centered"> {{ row.humidity }}</td>
+                                {% endif %}
                                 <td class="has-text-centered"> {{ row.date_releve }}</td>
                             </tr>
                         {% endfor %}
