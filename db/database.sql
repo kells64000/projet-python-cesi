@@ -70,3 +70,5 @@ CREATE TABLE IF NOT EXISTS `data_weather_api` (
   PRIMARY KEY (`id_data_weather_api`),
   KEY `id_sensor` (`id_weather_api`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+-- INSERT INTO weather_api (name) VALUES('api');
