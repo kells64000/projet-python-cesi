@@ -11,6 +11,9 @@
 
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
     <script type="text/javascript" src="/static/build/public/js/app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.0.1/Chart.bundle.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.0.1/Chart.js"></script>
+
     <script>
         function editName(e) {
 
@@ -94,6 +97,91 @@
 
             request.send();
         }
+
+    var canvas = document.getElementById("chart");
+    var ctx = canvas.getContext('2d');
+
+    var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'line',
+
+    // The data for our dataset
+    data: {
+        labels: [
+          {% for item in sortResults %}
+              {% if item['temperature'] != None %}
+                  "{{ item['date_releve'] }}",
+              {% endif %}
+          {% endfor %}
+        ],
+        datasets: [{
+            label: 'Température (°C)',
+              strokeColor: "rgba(255, 0, 0,1)",
+              pointColor: "rgba(255, 0, 0,1)",
+        fill: false,
+      lineTension: 0.1,
+      backgroundColor: "red",
+      borderColor: "red", // The main line color
+      borderCapStyle: 'square',
+      borderDash: [], // try [5, 15] for instance
+      borderDashOffset: 0.0,
+      borderJoinStyle: 'miter',
+      pointBorderColor: "black",
+      pointBackgroundColor: "red",
+      pointBorderWidth: 1,
+      pointHoverRadius: 8,
+      pointHoverBackgroundColor: "red",
+      pointHoverBorderColor: "red",
+      pointHoverBorderWidth: 3,
+      pointRadius: 4,
+      pointHitRadius: 10,
+            data: [
+                {% for item in sortResults %}
+                  {% if item['temperature'] != None %}
+                    {{ item['temperature']}},
+                  {% endif %}
+                {% endfor %}
+          ]
+        }, {
+            label: 'Humidité (%)',
+            strokeColor: "rgba(255, 0, 0,1)",
+              pointColor: "rgba(255, 0, 0,1)",
+        fill: false,
+      lineTension: 0.1,
+      backgroundColor: "blue",
+      borderColor: "blue", // The main line color
+      borderCapStyle: 'square',
+      borderDash: [], // try [5, 15] for instance
+      borderDashOffset: 0.0,
+      borderJoinStyle: 'miter',
+      pointBorderColor: "black",
+      pointBackgroundColor: "blue",
+      pointBorderWidth: 1,
+      pointHoverRadius: 8,
+      pointHoverBackgroundColor: "blue",
+      pointHoverBorderColor: "blue",
+      pointHoverBorderWidth: 3,
+      pointRadius: 4,
+      pointHitRadius: 10,
+            data: [
+                {% for item in sortResults %}
+                  {% if item['temperature'] != None %}
+                    {{ item['humidity']}},
+                  {% endif %}
+                {% endfor %}
+            ]
+        }]
+    },
+
+    // Configuration options go here
+    options: {
+        scaleStartValue: 0,
+        scaleShowVerticalLines: true,
+        scaleShowGridLines : true,
+        barShowStroke : true,
+        scaleShowLabels: true,
+    }
+});
     </script>
 </body>
 </html>
