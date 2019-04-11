@@ -6,6 +6,7 @@ from random import random
 from time import sleep
 from threading import Thread, Event
 from flask_mail import Mail, Message
+from django.core.mail import EmailMessage
 
 app = Flask(__name__)
 #mail config
@@ -43,7 +44,7 @@ class Database:
         id_dernier = result[0]["id_sensor"]
         return result
     def getSensor(self,id_sensor):
-        self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.battery,ds.temperature,ds.humidity,ds.date_releve FROM data_sensor as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor WHERE s.id_sensor = "+id_sensor+" ORDER BY ds.id_data_sensor DESC")
+        self.cur.execute("SELECT * FROM data_sensor as ds WHERE `date_releve` < DATE(DATE_sub(NOW(), INTERVAL 5 MINUTE)) AND ds.id_sensor = "+id_sensor+" ORDER BY ds.id_data_sensor DESC")
         result = self.cur.fetchall()
         return result
     def updateNameSensor(self,id_sensor,name_sensor):
@@ -71,7 +72,7 @@ class DataBaseThread(Thread):
             self.cur.execute("SELECT s.id_sensor, s.name,s.ID,s.Mac,ds.id_data_sensor,ds.detected_signal,ds.battery,ds.temperature,ds.humidity,ds.date_releve FROM (SELECT DISTINCT id_sensor, id_data_sensor,detected_signal,battery,temperature,humidity,date_releve FROM data_sensor ORDER BY id_data_sensor DESC) as ds  LEFT JOIN sensor  as s on s.id_sensor = ds.id_sensor GROUP BY s.id_sensor ORDER BY id_sensor LIMIT 3")
             result = self.cur.fetchall()
 
-            self.cur.execute("SELECT * FROM data_weather_api as dwa LEFT JOIN weather_api as wa on wa.id_weather_api = dwa.id_weather_api GROUP BY wa.id_weather_api ORDER BY dwa.id_data_weather_api DESC LIMIT 1")
+            self.cur.execute("SELECT * FROM data_weather_api as dwa LEFT JOIN weather_api as wa on wa.id_weather_api = dwa.id_weather_api ORDER BY dwa.id_data_weather_api DESC LIMIT 1")
             resultApi = self.cur.fetchall()
 
             if (len(result) >= 2 and resultApi != 0):
@@ -102,7 +103,7 @@ class DataBaseThread(Thread):
                     'id_sensor3': resultApi[0]["id_weather_api"],
                     'id_data_sensor3': resultApi[0]["id_data_weather_api"],
                     'name3': resultApi[0]["name"],
-                    #'ID3': resultApi[0]["ID"],
+                    #'ID3': "Bordeaux",
                     #'Mac3': resultApi[0]["Mac"],
                     'signal3': resultApi[0]["detected_signal"],
                     #'battery3': resultApi[0]["battery"],
@@ -160,8 +161,39 @@ class DataBaseThread(Thread):
         global id_dernier  # Needed to modify global copy of globvar
         id_dernier = glvar
 
-#class Mail (Thread):
+class Mail (Thread):
 
+    def __init__(self):
+        self.delay = 120
+    def mailTemp(self):
+
+        while not thread_stop_event.isSet():
+            self.cur.execute("SELECT * FROM `data_sensor` as ds inner join sensor as s on ds.id_sensor = s.id_sensor WHERE `temperature` > 30 OR `temperature` < 10")
+            result = self.cur.fetchall()
+
+            if(len(result) != 0):
+                for row in result:
+                    subject, from_email, to = 'Alerte de température', 'awardopinion.redirection@gmail.com', 'alexis.truscello@viacesi.fr'
+                    text_content = 'Votre alerte de température a été activé, '
+                    msg = EmailMessage(subject, text_content, from_email, [to])
+                    msg.send()
+
+                    sleep(self.delay)
+
+    def mailHumidite(self):
+
+        while not thread_stop_event.isSet():
+            self.cur.execute("SELECT * FROM `data_sensor` as ds inner join sensor as s on ds.id_sensor = s.id_sensor WHERE `humidity` > 30 OR `humidity` < 0")
+            result = self.cur.fetchall()
+
+            if (len(result) != 0):
+                for row in result:
+                    subject, from_email, to = 'Alerte d\'humidité', 'awardopinion.redirection@gmail.com', 'alexis.truscello@viacesi.fr'
+                    text_content = 'Votre alerte d\'humidité a été activé, '
+                    msg = EmailMessage(subject, text_content, from_email, [to])
+                    msg.send()
+
+                    sleep(self.delay)
 @app.route('/')
 def index():
     def db_query():
@@ -183,7 +215,7 @@ def sensorName(sensor_id,sensor_name):
     emps = db.updateNameSensor(sensor_id,sensor_name)
     return emps
 
-@app.route('/apiName/<api_id>/<api_name>', methods = ['POST'])
+@app.route('/apiName/<api_id>/<api_name>')
 def apiName(api_id,api_name):
     db = Database()
     emps = db.updateNameApi(api_id,api_name)
