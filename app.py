@@ -94,7 +94,7 @@ class DataBaseThread(Thread):
                     'name3': result[2]["name"],
                     'ID3': result[2]["ID"],
                     'Mac3': result[2]["Mac"],
-                    'signal3': result[2]["detected_signal"],
+                    # 'signal3': result[2]["detected_signal"],
                     'battery3': result[2]["battery"],
                     'temperature3': str(result[2]["temperature"]),
                     'humidity3': str(result[2]["humidity"]),

@@ -94,9 +94,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
             signalName = "signal";
         } else if (id === 2) {
             signalName = "signal2";
-        } else {
-            signalName = "signal3";
         }
+        // else {
+        //     signalName = "signal3";
+        // }
 
         let signalHtml = document.getElementById(signalName);
 
