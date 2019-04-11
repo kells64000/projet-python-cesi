@@ -7,17 +7,31 @@
     width: 100%;
   }
 
-  &-temperature {
+  &-temperature-min {
     -webkit-appearance: none;
     -moz-appearance: none;
     background: linear-gradient(to right, rgb(255,255,255) , rgb(255,0,0) );
     width: 100%;
   }
 
-  &-humidite {
+  &-temperature-max {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: linear-gradient(to right, rgb(255,255,255) , rgb(169,7,12) );
+    width: 100%;
+  }
+
+  &-humidite-min {
     -webkit-appearance: none;
     -moz-appearance: none;
     background: -moz-linear-gradient(to right, rgb(255,255,255) , rgb(0,0,255) );
+    width: 100%;
+  }
+
+  &-humidite-max {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: -moz-linear-gradient(to right, rgb(255,255,255) , rgb(15,55,90) );
     width: 100%;
   }
 
