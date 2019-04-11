@@ -50,6 +50,10 @@ class Database:
         self.cur.execute("UPDATE `sensor` SET `name`= '"+name_sensor+"' WHERE `id_sensor` = "+id_sensor)
         result = self.cur.fetchall()
         return name_sensor
+    def updateNameApi(self,id_api,name_api):
+        self.cur.execute("UPDATE `weather_api` SET `name`= '"+name_api+"' WHERE `id_weather_api` = "+id_api)
+        result = self.cur.fetchall()
+        return name_api
 
 class DataBaseThread(Thread):
 
@@ -179,6 +183,11 @@ def sensorName(sensor_id,sensor_name):
     emps = db.updateNameSensor(sensor_id,sensor_name)
     return emps
 
+@app.route('/apiName/<api_id>/<api_name>', methods = ['POST'])
+def apiName(api_id,api_name):
+    db = Database()
+    emps = db.updateNameApi(api_id,api_name)
+    return emps
 
 @socketio.on('connect', namespace='/getNewDataSensor')
 def socket_connect():
